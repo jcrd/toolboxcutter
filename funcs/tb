@@ -1,0 +1,37 @@
+#!/bin/zsh
+
+TOOLBOX_DOCKERFILE="${TOOLBOX_DOCKERFILE:-Dockerfile.toolbox}"
+
+dir() { echo "${PWD##*/}" }
+
+create() {
+    dir="$(dir)"
+    cmd=(toolbox create --container "$dir")
+    image="$dir"-toolbox
+    if [[ -n "$1" ]]; then
+        cmd+=(--image "$1")
+    elif podman image exists "$image"; then
+        cmd+=(--image "$image")
+    elif [[ -e "$TOOLBOX_DOCKERFILE" ]]; then
+        podman build -f "$TOOLBOX_DOCKERFILE" -t "$image" . \
+            && cmd+=(--image "$image")
+    fi
+    ${cmd[@]}
+}
+
+container() {
+    podman container $1 "$(dir)"
+}
+
+if [[ $# -eq 0 ]]; then
+    toolbox enter --container "$(dir)"
+    return $?
+fi
+
+case "$1" in
+    create) shift; create "$1" ;;
+    recreate) container stop; container rm; create ;;
+    stop|rm) container "$1" ;;
+    rmi) podman image rm "$(dir)"-toolbox ;;
+    *) toolbox "$@"
+esac
