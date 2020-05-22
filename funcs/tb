@@ -20,7 +20,13 @@ create() {
 }
 
 container() {
-    podman container $1 "$(dir)"
+    dir="$(dir)"
+    case "$1" in
+        rm|stop)
+            podman ps | grep -q "$dir" && podman container stop "$dir" ;&
+        rm)
+            podman container exists "$dir" && podman container rm "$dir"
+    esac
 }
 
 if [[ $# -eq 0 ]]; then
@@ -30,7 +36,7 @@ fi
 
 case "$1" in
     create) shift; create "$1" ;;
-    recreate) container stop; container rm; create ;;
+    recreate) container rm; create ;;
     stop|rm) container "$1" ;;
     rmi) podman image rm "$(dir)"-toolbox ;;
     *) toolbox "$@"
