@@ -30,7 +30,9 @@ container() {
 }
 
 if [[ $# -eq 0 ]]; then
-    toolbox enter --container "$(dir)"
+    dir="$(dir)"
+    podman container exists "$dir" || create
+    toolbox enter --container "$dir"
     return $?
 fi
 
