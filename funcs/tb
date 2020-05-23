@@ -29,6 +29,11 @@ container() {
     esac
 }
 
+rm_image() {
+    container rm
+    podman image rm "$(dir)"-toolbox
+}
+
 if [[ $# -eq 0 ]]; then
     dir="$(dir)"
     podman container exists "$dir" || create
@@ -39,7 +44,8 @@ fi
 case "$1" in
     create) shift; create "$1" ;;
     recreate) container rm; create ;;
+    rebuild) rm_image; create ;;
     stop|rm) container "$1" ;;
-    rmi) podman image rm "$(dir)"-toolbox ;;
+    rmi) rm_image ;;
     *) toolbox "$@"
 esac
