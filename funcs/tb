@@ -52,7 +52,7 @@ case "$1" in
     create) shift; create "$1" ;;
     recreate) container rm; create ;;
     build) shift; [[ $# -gt 0 ]] && build "$@" ;;
-    rebuild) rm_image; create ;;
+    rebuild) container rm; create ;;
     stop|rm) container "$1" ;;
     rmi) rm_image ;;
     *) toolbox "$@"
