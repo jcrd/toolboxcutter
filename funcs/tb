@@ -31,8 +31,9 @@ container() {
 }
 
 rm_image() {
+    i="$(image_name)"
     container rm
-    podman image rm "$(image_name)"
+    podman image exists "$i" && podman image rm "$i"
 }
 
 if [[ $# -eq 0 ]]; then
