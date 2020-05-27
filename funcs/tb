@@ -6,16 +6,21 @@ dir_name() { echo "${PWD##*/}" }
 image_name() { echo "$(dir_name)"-toolbox }
 container_name() { echo "$(image_name)"-latest }
 
+build() {
+    f="${2-$TOOLBOX_DOCKERFILE}"
+    [[ -e "$f" ]] && podman build -f "$f" -t "$1" . && return 0
+    return 1
+}
+
 create() {
     i="$(image_name)"
     cmd=(toolbox create)
     if [[ -n "$1" ]]; then
         cmd+=(--image "$1")
-    elif podman image exists "$i"; then
+    elif podman image exists "$i" || build "$i"; then
         cmd+=(--image "$i":latest)
-    elif [[ -e "$TOOLBOX_DOCKERFILE" ]]; then
-        podman build -f "$TOOLBOX_DOCKERFILE" -t "$i" . \
-            && cmd+=(--image "$i":latest)
+    else
+        return 1
     fi
     ${cmd[@]}
 }
@@ -46,6 +51,7 @@ fi
 case "$1" in
     create) shift; create "$1" ;;
     recreate) container rm; create ;;
+    build) shift; [[ $# -gt 0 ]] && build "$@" ;;
     rebuild) rm_image; create ;;
     stop|rm) container "$1" ;;
     rmi) rm_image ;;
