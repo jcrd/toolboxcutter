@@ -41,6 +41,23 @@ rm_image() {
     podman image exists "$i" && podman image rm "$i"
 }
 
+rpkg_local() {
+    [[ -e "$TOOLBOX_DOCKERFILE" ]] || return 1
+
+    d="$(dir_name)"
+    out="$(mktemp --tmpdir -d "$d"-XXX)"
+
+    podman run --rm -v "$out":/out:Z -v "$PWD":/rpkg:Z -w /rpkg \
+        "$(image_name)" rpkg --path spec local --outdir /out
+
+    [[ $? -eq 0 ]] || return $?
+
+    if [[ $1 == 'install' ]]; then
+        rpms="$out/$(uname -m)"
+        dnf install "$(find $rpms -regex "$rpms/$d"'-[0-9\.].*\.rpm')"
+    fi
+}
+
 if [[ $# -eq 0 ]]; then
     c="$(container_name)"
     podman container exists "$c" || create
@@ -55,5 +72,7 @@ case "$1" in
     rebuild) container rm; build; create ;;
     stop|rm) container "$1" ;;
     rmi) rm_image ;;
+    rpkg) rpkg_local ;;
+    rpkg-install) rpkg_local install ;;
     *) toolbox "$@"
 esac
