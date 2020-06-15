@@ -8,8 +8,12 @@ container_name() { echo "$(image_name)"-latest }
 
 build() {
     f="${2-$TOOLBOX_DOCKERFILE}"
-    [[ -e "$f" ]] && podman build -f "$f" -t "$1" . && return 0
-    return 1
+    if [[ -e "$f" ]]; then
+        podman build -f "$f" -t "$1" .
+    else
+        echo "$f does not exist" >&2
+        return 1
+    fi
 }
 
 create() {
@@ -60,8 +64,7 @@ rpkg_local() {
 
 if [[ $# -eq 0 ]]; then
     c="$(container_name)"
-    podman container exists "$c" || create
-    toolbox enter --container "$c"
+    podman container exists "$c" || create && toolbox enter --container "$c"
     return $?
 fi
 
