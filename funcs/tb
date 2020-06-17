@@ -9,7 +9,7 @@ container_name() { echo "$(image_name)"-latest }
 build() {
     f="${2-$TOOLBOX_DOCKERFILE}"
     if [[ -e "$f" ]]; then
-        podman build -f "$f" -t "$1" .
+        podman build -f "$f" -t "${1-$(image_name)}" .
     else
         echo "$f does not exist" >&2
         return 1
