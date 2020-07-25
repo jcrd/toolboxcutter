@@ -67,6 +67,7 @@ rpkg_local() {
 
 if [[ $# -eq 0 ]]; then
     c="$(container_name)"
+    echo 'Entering toolbox...'
     podman container exists "$c" || create && toolbox enter --container "$c"
     return $?
 fi
