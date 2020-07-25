@@ -60,8 +60,8 @@ rpkg_local() {
     [[ $? -eq 0 ]] || return $?
 
     if [[ $1 == 'install' ]]; then
-        rpms="$out/$(uname -m)"
-        dnf install "$(find $rpms -regex "$rpms/$d"'-[0-9\.].*\.rpm')"
+        dnf install "$(find $out -regextype posix-extended \
+            -regex "$out/($(uname -m)|noarch)/$d"'-[0-9\.].*\.rpm')"
     fi
 }
 
