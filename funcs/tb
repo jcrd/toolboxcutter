@@ -6,6 +6,10 @@ dir_name() { echo "${PWD##*/}" }
 image_name() { echo "$(dir_name)"-toolbox }
 container_name() { echo "$(image_name)"-latest }
 
+img_exists() {
+    podman image exists "$1"
+}
+
 build() {
     f="${2-$TOOLBOX_DOCKERFILE}"
     if [[ -e "$f" ]]; then
@@ -21,7 +25,7 @@ create() {
     cmd=(toolbox create)
     if [[ -n "$1" ]]; then
         cmd+=(--image "$1")
-    elif podman image exists "$i" || build "$i"; then
+    elif img_exists "$i" || build "$i"; then
         cmd+=(--image "$i":latest)
     else
         return 1
@@ -42,11 +46,12 @@ container() {
 rm_image() {
     i="$(image_name)"
     container rm
-    podman image exists "$i" && podman image rm "$i"
+    img_exists "$i" && podman image rm "$i"
 }
 
 rpkg_local() {
-    [[ -e "$TOOLBOX_DOCKERFILE" ]] || return 1
+    i="$(image_name)"
+    img_exists "$1" || build "$i" || return 1
 
     d="$(dir_name)"
     dir="$(find . -maxdepth 2 -name "$d".spec.rpkg -printf '%h\n' -quit)"
