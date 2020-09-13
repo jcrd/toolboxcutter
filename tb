@@ -1,10 +1,18 @@
-#!/bin/zsh
+#!/bin/bash
 
 TOOLBOX_DOCKERFILE="${TOOLBOX_DOCKERFILE:-Dockerfile.toolbox}"
 
-dir_name() { echo "${PWD##*/}" }
-image_name() { echo "$(dir_name)"-toolbox }
-container_name() { echo "$(image_name)"-latest }
+dir_name() {
+    echo "${PWD##*/}"
+}
+
+image_name() {
+    echo "$(dir_name)"-toolbox
+}
+
+container_name() {
+    echo "$(image_name)"-latest
+}
 
 img_exists() {
     podman image exists "$1"
@@ -86,7 +94,7 @@ if [[ $# -eq 0 ]]; then
     c="$(container_name)"
     echo 'Entering toolbox...'
     podman container exists "$c" || create && toolbox enter --container "$c"
-    return $?
+    exit $?
 fi
 
 case "$1" in
