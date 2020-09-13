@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 TOOLBOX_DOCKERFILE="${TOOLBOX_DOCKERFILE:-Dockerfile.toolbox}"
 
 dir_name() {
@@ -19,7 +21,7 @@ img_exists() {
 }
 
 init() {
-    if [[ -z "$1" ]]; then
+    if [[ -z "${1-}" ]]; then
         echo 'requires image argument' >&2
         return 1
     fi
@@ -43,7 +45,7 @@ build() {
 create() {
     i="$(image_name)"
     cmd=(toolbox create)
-    if [[ -n "$1" ]]; then
+    if [[ -n "${1-}" ]]; then
         cmd+=(--image "$1")
     elif img_exists "$i" || build "$i"; then
         cmd+=(--image "$i":latest)
@@ -84,7 +86,7 @@ rpkg_local() {
 
     [[ $? -eq 0 ]] || return $?
 
-    if [[ $1 == 'install' ]]; then
+    if [[ ${1-} == 'install' ]]; then
         dnf install "$(find $out -regextype posix-extended \
             -regex "$out/($(uname -m)|noarch)/$d"'-[0-9\.].*\.rpm')"
     fi
@@ -98,8 +100,8 @@ if [[ $# -eq 0 ]]; then
 fi
 
 case "$1" in
-    init) shift; init "$1" ;;
-    create) shift; create "$1" ;;
+    init) shift; init "${1-}" ;;
+    create) shift; create "${1-}" ;;
     recreate) container rm; create ;;
     build) shift; [[ $# -gt 0 ]] && build "$@" ;;
     rebuild) container rm; build; create ;;
