@@ -10,6 +10,18 @@ img_exists() {
     podman image exists "$1"
 }
 
+init() {
+    if [[ -z "$1" ]]; then
+        echo 'requires image argument' >&2
+        return 1
+    fi
+    if [[ -e "$TOOLBOX_DOCKERFILE" ]]; then
+        echo "$f already exists" >&2
+        return 1
+    fi
+    echo "FROM $1" > "$TOOLBOX_DOCKERFILE"
+}
+
 build() {
     f="${2-$TOOLBOX_DOCKERFILE}"
     if [[ -e "$f" ]]; then
@@ -78,6 +90,7 @@ if [[ $# -eq 0 ]]; then
 fi
 
 case "$1" in
+    init) shift; init "$1" ;;
     create) shift; create "$1" ;;
     recreate) container rm; create ;;
     build) shift; [[ $# -gt 0 ]] && build "$@" ;;
