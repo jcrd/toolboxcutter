@@ -3,6 +3,7 @@
 set -euo pipefail
 
 TOOLBOX_DOCKERFILE="${TOOLBOX_DOCKERFILE:-Dockerfile.toolbox}"
+RPKG_SPEC_EXT="${RPKG_SPEC_EXT:-rpkg.spec}"
 
 dir_name() {
     echo "${PWD##*/}"
@@ -76,7 +77,7 @@ rpkg_local() {
     img_exists "$i" || build "$i" || return 1
 
     d="$(dir_name)"
-    dir="$(find . -maxdepth 2 -name "$d".spec.rpkg -printf '%h\n' -quit)"
+    dir="$(find . -maxdepth 2 -name "$d.$RPKG_SPEC_EXT" -printf '%h\n' -quit)"
     [[ -n "$dir" ]] || return 1
 
     out="$(mktemp --tmpdir -d "$d"-XXX)"
