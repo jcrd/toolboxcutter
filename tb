@@ -27,7 +27,7 @@ init() {
         return 1
     fi
     if [[ -e "$TOOLBOX_DOCKERFILE" ]]; then
-        echo "$f already exists" >&2
+        echo "$TOOLBOX_DOCKERFILE already exists" >&2
         return 1
     fi
     echo "FROM $1" > "$TOOLBOX_DOCKERFILE"
