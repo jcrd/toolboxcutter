@@ -31,6 +31,7 @@ init() {
         return 1
     fi
     echo "FROM $1" > "$TOOLBOX_DOCKERFILE"
+    $EDITOR "$TOOLBOX_DOCKERFILE"
 }
 
 build() {
