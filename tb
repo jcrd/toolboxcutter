@@ -78,13 +78,13 @@ rpkg_local() {
     img_exists "$i" || build "$i" || return 1
 
     d="$(dir_name)"
-    dir="$(find . -maxdepth 2 -name "$d.$RPKG_SPEC_EXT" -printf '%h\n' -quit)"
-    [[ -n "$dir" ]] || return 1
+    spec="$(find . -maxdepth 2 -name "$d.$RPKG_SPEC_EXT")"
+    [[ -n "$spec" ]] || return 1
 
     out="$(mktemp --tmpdir -d "$d"-XXX)"
 
     podman run --rm -v "$out":/out:Z -v "$PWD":/rpkg:Z -w /rpkg \
-        "$(image_name)" rpkg --path "$dir" local --outdir /out
+        "$(image_name)" rpkg local --spec "$spec" --outdir /out
 
     [[ $? -eq 0 ]] || return $?
 
