@@ -89,9 +89,10 @@ rpkg_local() {
     [[ $? -eq 0 ]] || return $?
 
     if [[ ${1-} == 'install' ]]; then
-        sudo dnf install --setopt=install_weak_deps=False \
-            "$(find $out -regextype posix-extended \
+        rpms="$(find $out -regextype posix-extended \
             -regex "$out/($(uname -m)|noarch)/$d"'-[0-9\.].*\.rpm')"
+        [[ -z "$rpms" ]] && return 1
+        sudo dnf install --setopt=install_weak_deps=False $rpms
     fi
 }
 
