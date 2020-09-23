@@ -96,6 +96,11 @@ rpkg_local() {
     fi
 }
 
+if [[ -n "$TOOLBOX_PATH" ]]; then
+    echo 'Already in a toolbox' >&2
+    exit 2
+fi
+
 if [[ $# -eq 0 ]]; then
     c="$(container_name)"
     echo 'Entering toolbox...'
