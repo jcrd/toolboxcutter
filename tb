@@ -96,7 +96,7 @@ rpkg_local() {
     fi
 }
 
-if [[ -n "$TOOLBOX_PATH" ]]; then
+if [[ -n "${TOOLBOX_PATH-}" ]]; then
     echo 'Already in a toolbox' >&2
     exit 2
 fi
