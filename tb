@@ -92,7 +92,10 @@ rpkg_local() {
     img_exists "$i" || build "$i" || return 1
 
     spec="$(find . -maxdepth 2 -name "$spec_name.$spec_ext")"
-    [[ -n "$spec" ]] || return 1
+    if [[ -z "$spec" ]]; then
+        echo 'rpkg spec template not found' >&2
+        return 1
+    fi
 
     out="$(mktemp --tmpdir -d "$spec_name"-XXX)"
 
@@ -106,7 +109,10 @@ rpkg_local() {
             -regextype posix-extended \
             -regex \
             "$out/($(uname -m)|noarch)/${rpm_name-$spec_name}"'-[0-9\.].*\.rpm')"
-        [[ -z "$rpms" ]] && return 1
+        if [[ -z "$rpms" ]]; then
+            echo 'no rpms found' >&2
+            return 1
+        fi
         sudo dnf install --setopt=install_weak_deps=False $rpms
     fi
 }
