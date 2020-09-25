@@ -74,23 +74,38 @@ rm_image() {
 }
 
 rpkg_local() {
+    cmd=$1
+    shift
+
+    spec_name="$(dir_name)"
+    spec_ext="$RPKG_SPEC_EXT"
+
+    while getopts ':n:e:r:' opt "$@"; do
+        case $opt in
+            n) spec_name="$OPTARG" ;;
+            e) spec_ext="$OPTARG" ;;
+            r) rpm_name="$OPTARG" ;;
+        esac
+    done
+
     i="$(image_name)"
     img_exists "$i" || build "$i" || return 1
 
-    d="$(dir_name)"
-    spec="$(find . -maxdepth 2 -name "$d.$RPKG_SPEC_EXT")"
+    spec="$(find . -maxdepth 2 -name "$spec_name.$spec_ext")"
     [[ -n "$spec" ]] || return 1
 
-    out="$(mktemp --tmpdir -d "$d"-XXX)"
+    out="$(mktemp --tmpdir -d "$spec_name"-XXX)"
 
     podman run --rm -v "$out":/out:Z -v "$PWD":/rpkg:Z -w /rpkg \
         "$(image_name)" rpkg local --spec "$spec" --outdir /out
 
     [[ $? -eq 0 ]] || return $?
 
-    if [[ ${1-} == 'install' ]]; then
-        rpms="$(find $out -regextype posix-extended \
-            -regex "$out/($(uname -m)|noarch)/$d"'-[0-9\.].*\.rpm')"
+    if [[ ${cmd-} == 'install' ]]; then
+        rpms="$(find $out \
+            -regextype posix-extended \
+            -regex \
+            "$out/($(uname -m)|noarch)/${rpm_name-$spec_name}"'-[0-9\.].*\.rpm')"
         [[ -z "$rpms" ]] && return 1
         sudo dnf install --setopt=install_weak_deps=False $rpms
     fi
@@ -116,7 +131,7 @@ case "$1" in
     rebuild) container rm; build; create ;;
     stop|rm) container "$1" ;;
     rmi) rm_image ;;
-    rpkg) rpkg_local ;;
-    rpkg-install) rpkg_local install ;;
+    rpkg) shift; rpkg_local build "$@";;
+    rpkg-install) shift; rpkg_local install "$@";;
     *) toolbox "$@"
 esac
