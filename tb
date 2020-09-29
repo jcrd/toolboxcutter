@@ -139,5 +139,6 @@ case "$1" in
     rmi) rm_image ;;
     rpkg) shift; rpkg_local build "$@";;
     rpkg-install) shift; rpkg_local install "$@";;
+    run) shift; toolbox run -c "$(container_name)" "$@" ;;
     *) toolbox "$@"
 esac
