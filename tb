@@ -21,13 +21,13 @@ commands:
   rmi             Remove image
   rpkg            Build rpm via rpkg
     options:
-      -n            rpkg spec template name
-      -e            rpkg spec template extension
+      -n NAME       rpkg spec template name
+      -e EXT        rpkg spec template extension
   rpkg-install    Build and install rpm via rpkg
     options:
-      -n            rpkg spec template name
-      -e            rpkg spec template extension
-      -r            Name of produced rpm to install
+      -n NAME       rpkg spec template name
+      -e EXT        rpkg spec template extension
+      -r NAME       Name of produced rpm to install
   run COMMAND     Run COMMAND in toolbox'
 }
 
