@@ -133,7 +133,7 @@ case "$1" in
     init) shift; init "${1-}" ;;
     create) shift; create "${1-}" ;;
     recreate) container rm; create ;;
-    build) shift; [[ $# -gt 0 ]] && build "$@" ;;
+    build) shift; build "${1-}" ;;
     rebuild) container rm; build; create ;;
     stop|rm) container "$1" ;;
     rmi) rm_image ;;
