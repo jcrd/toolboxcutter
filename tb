@@ -5,6 +5,32 @@ set -euo pipefail
 TOOLBOX_DOCKERFILE="${TOOLBOX_DOCKERFILE:-Dockerfile.toolbox}"
 RPKG_SPEC_EXT="${RPKG_SPEC_EXT:-rpkg.spec}"
 
+usage() {
+    echo 'usage: tb [command]
+
+With no command, enter toolbox.
+
+commands:
+  init IMAGE      Initialize Dockerfile based on IMAGE
+  create [IMAGE]  Create container (from IMAGE if provided)
+  recreate        Remove and recreate container
+  build [NAME]    Build image (with NAME if provided)
+  rebuild         Remove container and rebuild image
+  stop            Stop container
+  rm              Remove container
+  rmi             Remove image
+  rpkg            Build rpm via rpkg
+    options:
+      -n            rpkg spec template name
+      -e            rpkg spec template extension
+  rpkg-install    Build and install rpm via rpkg
+    options:
+      -n            rpkg spec template name
+      -e            rpkg spec template extension
+      -r            Name of produced rpm to install
+  run COMMAND     Run COMMAND in toolbox'
+}
+
 dir_name() {
     echo "${PWD##*/}"
 }
@@ -140,5 +166,5 @@ case "$1" in
     rpkg) shift; rpkg_local build "$@";;
     rpkg-install) shift; rpkg_local install "$@";;
     run) shift; toolbox run -c "$(container_name)" "$@" ;;
-    *) toolbox "$@"
+    *) usage >&2; exit 2
 esac
