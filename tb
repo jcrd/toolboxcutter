@@ -61,7 +61,7 @@ init() {
 }
 
 build() {
-    f="${2-$TOOLBOX_DOCKERFILE}"
+    local f="${2-$TOOLBOX_DOCKERFILE}"
     if [[ -e "$f" ]]; then
         podman build -f "$f" -t "${1-$(image_name)}" .
     else
@@ -71,8 +71,8 @@ build() {
 }
 
 create() {
-    i="$(image_name)"
-    cmd=(toolbox create)
+    local i="$(image_name)"
+    local cmd=(toolbox create)
     if [[ -n "${1-}" ]]; then
         cmd+=(--image "$1")
     elif img_exists "$i" || build "$i"; then
@@ -84,7 +84,7 @@ create() {
 }
 
 container() {
-    c="$(container_name)"
+    local c="$(container_name)"
     if [[ "$1" == rm || "$1" == stop ]]; then
         podman ps | grep -q "$c" && podman container stop "$c"
     fi
@@ -94,17 +94,17 @@ container() {
 }
 
 rm_image() {
-    i="$(image_name)"
+    local i="$(image_name)"
     container rm
     img_exists "$i" && podman image rm "$i"
 }
 
 rpkg_local() {
-    cmd=$1
+    local cmd=$1
     shift
 
-    spec_name="$(dir_name)"
-    spec_ext="$RPKG_SPEC_EXT"
+    local spec_name="$(dir_name)"
+    local spec_ext="$RPKG_SPEC_EXT"
 
     while getopts ':n:e:r:' opt "$@"; do
         case $opt in
@@ -114,16 +114,16 @@ rpkg_local() {
         esac
     done
 
-    i="$(image_name)"
+    local i="$(image_name)"
     img_exists "$i" || build "$i" || return 1
 
-    spec="$(find . -maxdepth 2 -name "$spec_name.$spec_ext")"
+    local spec="$(find . -maxdepth 2 -name "$spec_name.$spec_ext")"
     if [[ -z "$spec" ]]; then
         echo 'rpkg spec template not found' >&2
         return 1
     fi
 
-    out="$(mktemp --tmpdir -d "$spec_name"-XXX)"
+    local out="$(mktemp --tmpdir -d "$spec_name"-XXX)"
 
     podman run --rm -v "$out":/out:Z -v "$PWD":/rpkg:Z -w /rpkg \
         "$(image_name)" rpkg local --spec "$spec" --outdir /out
@@ -131,7 +131,7 @@ rpkg_local() {
     [[ $? -eq 0 ]] || return $?
 
     if [[ ${cmd-} == 'install' ]]; then
-        rpms="$(find $out \
+        local rpms="$(find $out \
             -regextype posix-extended \
             -regex \
             "$out/($(uname -m)|noarch)/${rpm_name-$spec_name}"'-[0-9\.].*\.rpm')"
