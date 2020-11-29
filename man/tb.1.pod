@@ -1,0 +1,102 @@
+=head1 NAME
+
+toolboxcutter - script to automate use of toolbox
+
+=head1 SYNOPSIS
+
+B<tb> [command]
+
+=head1 DESCRIPTION
+
+toolboxcutter automates use of toolbox using per-project Dockerfiles.
+
+=head1 COMMANDS
+
+=over
+
+=item B<init> I<IMAGE>
+
+Initialize Dockerfile based on I<IMAGE>.
+
+=item B<create> [I<IMAGE>]
+
+Create container (from I<IMAGE> if provided).
+
+=item B<recreate>
+
+Remove and recreate container.
+
+=item B<build> [I<NAME>]
+
+Build image (with I<NAME> if provided).
+
+=item B<rebuild>
+
+Remove container and rebuild image.
+
+=item B<stop>
+
+Stop container.
+
+=item B<rm>
+
+Remove container.
+
+=item B<rmi>
+
+Remove image.
+
+=item B<rpkg> [options]
+
+Build rpm via rpkg.
+
+=over
+
+=item B<-n> I<NAME>
+
+rpkg spec template name.
+
+=item B<-e> I<EXT>
+
+rpkg spec template extension.
+
+=back
+
+=item B<rpkg-install> [options]
+
+Build and install rpm via rpkg.
+
+=over
+
+=item B<-n> I<NAME>
+
+rpkg spec template name.
+
+=item B<-e> I<EXT>
+
+rpkg spec template extension.
+
+=item B<-r> I<NAME>
+
+Name of produced rpm to install.
+
+=back
+
+=item B<run> I<COMMAND>
+
+Run I<COMMAND> in toolbox.
+
+=back
+
+=head1 AUTHOR
+
+James Reed E<lt>jcrd@tuta.ioE<gt>
+
+=head1 REPORTING BUGS
+
+Bugs and issues can be reported here:
+L<https://github.com/jcrd/toolboxcutter/issues>
+
+=head1 COPYRIGHT
+
+Copyright 2019-2020 James Reed. toolboxcutter is licensed under the MIT License.
