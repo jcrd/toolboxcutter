@@ -86,6 +86,10 @@ Name of produced rpm to install.
 
 Run I<COMMAND> in toolbox.
 
+=item B<version>
+
+Show version.
+
 =back
 
 =head1 AUTHOR

@@ -30,6 +30,7 @@ commands:
       -e EXT        rpkg spec template extension
       -r NAME       Name of produced rpm to install
   run COMMAND     Run COMMAND in toolbox
+  version         Show version
 ```
 
 `tb` will look for a `Dockerfile` in the working directory. If it exists, the
