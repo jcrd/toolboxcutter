@@ -1,6 +1,10 @@
 #!/bin/bash
 
+# This project is licensed under the MIT License (see LICENSE).
+
 set -euo pipefail
+
+readonly VERSION=
 
 TOOLBOX_DOCKERFILE="${TOOLBOX_DOCKERFILE:-Dockerfile.toolbox}"
 RPKG_SPEC_EXT="${RPKG_SPEC_EXT:-rpkg.spec}"
