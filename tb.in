@@ -4,7 +4,7 @@
 
 set -euo pipefail
 
-readonly VERSION=
+readonly VERSION=@VERSION
 
 TOOLBOX_DOCKERFILE="${TOOLBOX_DOCKERFILE:-Dockerfile.toolbox}"
 RPKG_SPEC_EXT="${RPKG_SPEC_EXT:-rpkg.spec}"

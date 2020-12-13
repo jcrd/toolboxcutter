@@ -10,7 +10,7 @@ MANPAGE = tb.1
 all: tb $(MANPAGE)
 
 tb: tb.in
-	sed "s/VERSION=/VERSION=$(VERSION)/" tb.in > tb
+	sed "s/@VERSION/$(VERSION)/" tb.in > tb
 	chmod +x tb
 
 $(MANPAGE): man/$(MANPAGE).pod
