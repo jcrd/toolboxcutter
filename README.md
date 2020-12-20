@@ -4,6 +4,16 @@ toolboxcutter (`tb`) is a script to automate use of
 [toolbox](https://github.com/containers/toolbox) using per-project
 `Dockerfile`s.
 
+## Packages
+
+* **RPM** package available from [copr][1]. [![Copr build status](https://copr.fedorainfracloud.org/coprs/jcrd/toolboxcutter/package/toolboxcutter/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/jcrd/toolboxcutter/package/toolboxcutter/)
+
+  Install with:
+  ```
+  dnf copr enable jcrd/toolboxcutter
+  dnf install toolboxcutter
+  ```
+
 ## Usage
 
 ```
@@ -61,3 +71,5 @@ See [jcrd/toolboxes](https://github.com/jcrd/toolboxes) for additional examples.
 ## License
 
 This project is licensed under the MIT License (see [LICENSE](LICENSE)).
+
+[1]: https://copr.fedorainfracloud.org/coprs/jcrd/toolboxcutter/
