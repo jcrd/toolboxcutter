@@ -93,8 +93,8 @@ container() {
     if [[ "$1" == rm || "$1" == stop ]]; then
         podman ps | grep -q "$c" && podman container stop "$c"
     fi
-    if [[ "$1" == rm ]]; then
-        podman container exists "$c" && podman container rm "$c"
+    if [[ "$1" == rm ]] && podman container exists "$c"; then
+        podman container rm "$c"
     fi
 }
 
