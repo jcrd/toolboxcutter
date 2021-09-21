@@ -52,6 +52,13 @@ img_exists() {
     podman image exists "$1"
 }
 
+enter() {
+    c="$(container_name)"
+    echo 'Entering toolbox...'
+    podman container exists "$c" || create && toolbox enter --container "$c"
+    exit $?
+}
+
 init() {
     if [[ -z "${1-}" ]]; then
         echo 'requires image argument' >&2
@@ -63,6 +70,7 @@ init() {
     fi
     echo "FROM $1" > "$TOOLBOX_DOCKERFILE"
     $EDITOR "$TOOLBOX_DOCKERFILE"
+    enter
 }
 
 build() {
@@ -153,12 +161,7 @@ if [[ -n "${TOOLBOX_PATH-}" ]]; then
     exit 2
 fi
 
-if [[ $# -eq 0 ]]; then
-    c="$(container_name)"
-    echo 'Entering toolbox...'
-    podman container exists "$c" || create && toolbox enter --container "$c"
-    exit $?
-fi
+[[ $# -eq 0 ]] && enter
 
 case "$1" in
     init) shift; init "${1-}" ;;
