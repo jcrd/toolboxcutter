@@ -25,8 +25,14 @@ commands:
   init IMAGE      Initialize Dockerfile based on IMAGE
   create [IMAGE]  Create container (from IMAGE if provided)
   recreate        Remove and recreate container
-  build [NAME]    Build image (with NAME if provided)
+  build           Build image
+    options:
+      -n NAME       Name of image
+      -c            Build without cache
   rebuild         Remove container and rebuild image
+    options:
+      -n NAME       Name of image
+      -c            Build without cache
   stop            Stop container
   rm              Remove container
   rmi             Remove image

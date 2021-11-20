@@ -19,8 +19,14 @@ commands:
   init IMAGE      Initialize Dockerfile based on IMAGE
   create [IMAGE]  Create container (from IMAGE if provided)
   recreate        Remove and recreate container
-  build [NAME]    Build image (with NAME if provided)
+  build           Build image
+    options:
+      -n NAME       Name of image
+      -c            Build without cache
   rebuild         Remove container and rebuild image
+    options:
+      -n NAME       Name of image
+      -c            Build without cache
   stop            Stop container
   rm              Remove container
   rmi             Remove image
@@ -81,9 +87,17 @@ init() {
 }
 
 build() {
-    local f="${2-$TOOLBOX_DOCKERFILE}"
-    if [[ -e "$f" ]]; then
-        podman build -f "$f" -t "${1-$(image_name)}" .
+    while getopts ':cn:' opt "$@"; do
+        case $opt in
+            c) no_cache=true ;;
+            n) name="$OPTARG" ;;
+        esac
+    done
+
+    if [[ -e "$TOOLBOX_DOCKERFILE" ]]; then
+        podman build ${no_cache+--no-cache} \
+          -f "$TOOLBOX_DOCKERFILE" \
+          -t "${name:-$(image_name)}" .
     else
         echo "$f does not exist" >&2
         return 1
@@ -95,7 +109,7 @@ create() {
     local cmd=(toolbox create)
     if [[ -n "${1-}" ]]; then
         cmd+=(--image "$1")
-    elif img_exists "$i" || build "$i"; then
+    elif img_exists "$i" || build -n "$i"; then
         cmd+=(--image "$i":latest)
     else
         return 1
@@ -135,7 +149,7 @@ rpkg_local() {
     done
 
     local i="$(image_name)"
-    img_exists "$i" || build "$i" || return 1
+    img_exists "$i" || build -n "$i" || return 1
 
     local spec="$(find . -maxdepth 2 -name "$spec_name.$spec_ext")"
     if [[ -z "$spec" ]]; then
@@ -174,8 +188,8 @@ case "$1" in
     init) shift; init "${1-}" ;;
     create) shift; create "${1-}" ;;
     recreate) container rm; create ;;
-    build) shift; build "${1-}" ;;
-    rebuild) container rm; build; create ;;
+    build) shift; build "$@" ;;
+    rebuild) shift; container rm; build "$@"; create ;;
     stop|rm) container "$1" ;;
     rmi) rm_image ;;
     rpkg) shift; rpkg_local build "$@";;
