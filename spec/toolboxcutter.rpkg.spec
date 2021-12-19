@@ -1,14 +1,14 @@
 %global cli_cmd tb
 
-Name: {{{ git_name name="toolboxcutter" }}}
-Version: {{{ git_version lead="$(git tag | sed -n 's/^v//p' | sort --version-sort -r | head -n1)" }}}
+Name: {{{ git_cwd_name name="toolboxcutter" }}}
+Version: {{{ git_cwd_version lead="$(git tag | sed -n 's/^v//p' | sort --version-sort -r | head -n1)" }}}
 Release: 1%{?dist}
 Summary: A script to automate use of toolbox
 
 License: MIT
 URL: https://github.com/jcrd/toolboxcutter
-VCS: {{{ git_vcs }}}
-Source0: {{{ git_pack }}}
+VCS: {{{ git_cwd_vcs }}}
+Source0: {{{ git_cwd_pack }}}
 
 BuildArch: noarch
 
@@ -24,7 +24,7 @@ Requires: toolbox
 toolboxcutter automates use of toolbox using per-project Dockerfiles.
 
 %prep
-{{{ git_setup_macro }}}
+{{{ git_cwd_setup_macro }}}
 
 %build
 %make_build PREFIX=/usr
@@ -39,4 +39,4 @@ toolboxcutter automates use of toolbox using per-project Dockerfiles.
 /usr/share/man/man1/%{cli_cmd}.1.gz
 
 %changelog
-{{{ git_changelog }}}
+{{{ git_cwd_changelog }}}
