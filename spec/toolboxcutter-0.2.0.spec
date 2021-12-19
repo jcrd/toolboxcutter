@@ -1,13 +1,13 @@
 %global cli_cmd tb
 
 Name: toolboxcutter
-Version: 0.1.1
+Version: 0.2.0
 Release: 1%{?dist}
 Summary: A script to automate use of toolbox
 
 License: MIT
 URL: https://github.com/jcrd/toolboxcutter
-Source0: https://github.com/jcrd/toolboxcutter/archive/v0.1.1.tar.gz
+Source0: https://github.com/jcrd/toolboxcutter/archive/v0.2.0.tar.gz
 
 BuildArch: noarch
 
@@ -38,6 +38,9 @@ toolboxcutter automates use of toolbox using per-project Dockerfiles.
 /usr/share/man/man1/%{cli_cmd}.1.gz
 
 %changelog
+* Sun Dec 19 2021 James Reed <james@twiddlingbits.net> - 0.2.0-1
+- Release v0.2.0
+
 * Tue May 11 2021 James Reed <james@twiddlingbits.net> - 0.1.1-1
 - Release v0.1.1
 
