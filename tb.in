@@ -99,7 +99,7 @@ build() {
           -f "$TOOLBOX_DOCKERFILE" \
           -t "${name:-$(image_name)}" .
     else
-        echo "$f does not exist" >&2
+        echo "$TOOLBOX_DOCKERFILE does not exist" >&2
         return 1
     fi
 }
