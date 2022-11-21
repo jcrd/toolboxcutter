@@ -62,7 +62,7 @@ toolbox.
 
 An example toolbox `Dockerfile` for shell script development:
 ```
-FROM registry.fedoraproject.org/f33/fedora-toolbox:33
+FROM registry.fedoraproject.org/fedora-toolbox:37
 
 RUN dnf install -y neovim
 RUN dnf install -y rpkg
@@ -73,6 +73,18 @@ RUN npm i -g bash-language-server
 ```
 
 See [jcrd/toolboxes](https://github.com/jcrd/toolboxes) for additional examples.
+
+## Gotchas
+
+- Be sure to keep toolbox container images up-to-date with your distribution when
+  building RPMs with `rpkg`.
+
+  If you run into issues such as:
+
+  `- nothing provides python(abi) = 3.10 needed by ...`
+
+  when installing built RPMs after upgrading your distribution, it's likely your
+  container image is out-of-date and must be updated and rebuilt.
 
 ## License
 
