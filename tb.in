@@ -123,7 +123,7 @@ container() {
         podman ps | grep -q "$c" && podman container stop "$c"
     fi
     if [[ "$1" == rm ]] && podman container exists "$c"; then
-        podman container rm "$c"
+        podman container rm -f "$c"
     fi
 }
 
